@@ -1,0 +1,276 @@
+/* agdasima-regular - latin */
+@font-face {
+  font-display: swap;
+  /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Agdasima';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/agdasima-v4-latin-regular.woff2') format('woff2');
+  /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* agdasima-700 - latin */
+@font-face {
+  font-display: swap;
+  /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Agdasima';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/agdasima-v4-latin-700.woff2') format('woff2');
+  /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+* {
+  font-family: 'Agdasima', sans-serif;
+  font-style: normal;
+  font-weight: 700;
+
+  margin: 0;
+  padding: 0;
+}
+
+.logIn-container {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-image: url(../assets/image.jpg);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+
+  background: transparent;
+}
+
+.blur {
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background: transparent;
+
+  background: transparent;
+
+  padding-bottom: 80px;
+  padding-top: 80px;
+  padding-left: 50px;
+  padding-right: 50px;
+
+  z-index: 1;
+}
+
+.blur::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+  translate: -50% -50%;
+  z-index: -1;
+  filter: blur(3px);
+  border-radius: 15px;
+}
+
+.input-box input {
+  font-family: 'Agdasima', monospace;
+  font-style: normal;
+  font-weight: 700;
+
+  display: block;
+  margin-top: 30px;
+
+  font-size: 20px;
+
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  padding-right: 40px;
+  width: 325px;
+
+  border: none;
+  outline: none;
+  border-radius: 30px;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+
+  transition: background-color 0.2s;
+
+  cursor: pointer;
+}
+
+.password {
+  -webkit-text-security: circle;
+}
+
+.input-box input:focus,
+.input-box input:active,
+.username:not(:placeholder-shown),
+.password:not(:placeholder-shown),
+.email:not(:placeholder-shown) {
+  background-color: rgb(201, 201, 201);
+}
+
+.login-text {
+  font-size: 50px;
+}
+
+.register-text {
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.button {
+  font-size: 35px;
+  margin-top: 30px;
+
+  border: none;
+  outline: none;
+  border-radius: 30px;
+
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+
+  cursor: pointer;
+
+  background-color: rgb(201, 201, 201);
+
+  transition: padding-left 0.2s,
+    padding-right 0.2s,
+    opacity 0.15s;
+}
+
+.button:hover {
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+.button:active {
+  opacity: 0.7;
+}
+
+#icons {
+  transform: translate(292px, 62px);
+  cursor: pointer;
+}
+
+.cloud-image {
+  width: 50px;
+  margin-left: 10px;
+  transform: translateY(13px);
+  animation: cloud 1.5s linear 1;
+}
+
+@keyframes cloud {
+  0% {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+
+  80% {
+    transform: translateY(-5px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateY(13px);
+    opacity: 1;
+  }
+}
+
+.logIn-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.input-box {
+  position: relative;
+}
+
+.inputs-labels {
+
+  position: absolute;
+
+  top: 57px;
+  left: 30px;
+
+  color: gray;
+
+  font-size: 1.3rem;
+
+  transition: transform 0.3s,
+    color 0.3s;
+
+  cursor: pointer;
+}
+
+.password-label {
+  top: 289px;
+}
+
+.email-label {
+  top: 196px;
+}
+
+.username {
+  margin-bottom: 45px;
+}
+
+.username:focus+.username-label,
+.password:focus+.password-label,
+.email:focus+.email-label,
+.username:not(:placeholder-shown)+.username-label,
+.password:not(:placeholder-shown)+.password-label,
+.email:not(:placeholder-shown)+.email-label{
+  transform: translate(-10px, -33px);
+  color: #000;
+}
+
+
+/* Registration */
+
+.exited-to-see {
+  margin-top: 15px;
+  font-size: 1.2rem;
+}
+
+.exited-to-see-span {
+  color: rgb(0, 115, 255);
+  text-decoration: underline;
+
+  font-size: 1.4rem;
+}
+
+.line {
+  width: 325px;
+  height: 1px;
+
+  background-color: #000;
+}
+
+.email-login-label {
+  top: 57px;
+}
+
+.password-login-label {
+  top: 150px;
+}
