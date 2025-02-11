@@ -1,11 +1,11 @@
 import "./Styles/ChatPage.css";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useRef } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import { collection, query, where, getDoc, updateDoc, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "./firebase";
 import { AuthContext } from "./context/AuthContext";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, deleteDoc } from "firebase/firestore";
 import { use } from "react";
 
 function ChatPage() {
@@ -18,8 +18,15 @@ function ChatPage() {
   const [user, setUser] = useState(null);
   const [err, setErr] = useState(false);
   const [chats, setChats] = useState([]);
+  const [sender, setSender] = useState(null);
 
   const { currentUser } = useContext(AuthContext);
+
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
   
   useEffect(() => {
     
@@ -67,15 +74,26 @@ function ChatPage() {
   }
 
   function handleDeleteClick(index) {
-    const newFriendsList = friendsList.filter((_, i) => i !== index);
+    
+    const friendToDelete = Object.entries(chats)[index][1].userInfo.displayName;
+    const friendToDeleteUid = Object.entries(chats)[index][1].userInfo.uid;
+    const combinedId = currentUser.uid > friendToDeleteUid ? currentUser.uid + friendToDeleteUid : friendToDeleteUid + currentUser.uid;
+    const chatRef = doc(db, "chats", combinedId);
 
-    if (friendsList[index] === currentChat) {
-      setCurrentChat("No one selected!");
-      setMessages([]);
-    }
+    deleteDoc(chatRef);
 
-    setFriendsList(newFriendsList);
-    setSelectedFriendIndex(null);
+    updateDoc(doc(db, "userChats", currentUser.uid), {
+      [combinedId]: null,
+    });
+
+    updateDoc(doc(db, "userChats", friendToDeleteUid), {
+      [combinedId]: null,
+    });
+
+    setChats(Object.fromEntries(Object.entries(chats).filter(([key, value]) => key !== friendToDeleteUid)));
+    setMessages([]);
+    setCurrentChat("No one selected!");
+
   }
 
   useEffect(() => {
@@ -150,6 +168,7 @@ function ChatPage() {
       }
     }
   }, [user, currentUser.uid]);
+  
 
   async function handleSelectChat(event, index) {
 
@@ -205,13 +224,14 @@ function ChatPage() {
     }
 
     const newMessage = document.querySelector(".message-input").value;
+    const newMessageSender = currentUser.displayName;
 
     if (newMessage) {
-      setMessages(m => [...m, newMessage]);
+      setMessages(m => [...m, {message: newMessage, sender: newMessageSender}]);
       const combinedId = currentUser.uid > user.uid ? currentUser.uid + user.uid : user.uid + currentUser.uid;
       const chatRef = doc(db, "chats", combinedId);
       updateDoc(chatRef, {
-        messages: [...messages, newMessage],
+        messages: [...messages, {message: newMessage, sender: newMessageSender}],
       });
       document.querySelector(".message-input").value = "";
     }
@@ -231,10 +251,10 @@ function ChatPage() {
       <ul>
         {messages.map((message, index) => (
           <li key={index} className="message-item-li">
-            <h3 className="author-of-message">You:</h3>
-            <div className="message-div-item">
+            <h3 className="author-of-message" style={{ color: message.sender === currentUser.displayName ? "rgba(0, 255, 13, 0.51)" : "rgb(85, 93, 255)"}} key={index}>{message.sender}</h3>
+            <div className="message-div-item" ref={ref} style={{backgroundColor: message.sender === currentUser.displayName ? "rgba(0, 255, 13, 0.51)" : "rgb(85, 93, 255)"}}>
               <p className="message-text-item">
-                {message}
+                {message.message}
               </p>
             </div>
           </li>
@@ -254,7 +274,8 @@ function ChatPage() {
           </div>
           <div className="chat-list-div">
             <ul>
-              {Object.entries(chats)?.map((friend,index) => (
+              {chats && Object.entries(chats).map((friend,index) => (
+                friend[1] && friend[1].userInfo && (
                 <li key={friend[0]}>
                   <div className="chat-list-item" onClick={(event) => handleSelectChat(event, index)} style={{
                   backgroundColor: selectedFriendIndex === index ? "rgba(61, 69, 238, 0.51)" : "rgb(61, 69, 238)"
@@ -267,6 +288,7 @@ function ChatPage() {
                     </button>
                   </div>
                 </li>
+                )
               ))}
             </ul>
           </div>

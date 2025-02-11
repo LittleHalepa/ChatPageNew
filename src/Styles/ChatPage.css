@@ -358,15 +358,11 @@ footer input:hover, footer input:focus {
   display: inline-block;
 
   padding: 5px 15px;
-
-  background-color: #5665FF;
   
   max-width: 600px;
   min-width: none;
 
   word-wrap: break-word;
-  
-  padding: 5px 15px;
 
   border-radius: 20px;
 
@@ -386,7 +382,6 @@ footer input:hover, footer input:focus {
 }
 
 .author-of-message {
-  color: rgb(103, 135, 250);
 
   font-family: 'Poppins';
   font-style: normal;
