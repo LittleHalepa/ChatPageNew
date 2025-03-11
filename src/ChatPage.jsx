@@ -293,7 +293,7 @@ function ChatPage() {
             </ul>
           </div>
         </nav>
-        <footer>
+        <footer className="chat-page-footer">
           <button className="log-out-button" onClick={() => signOut(auth)}>
             <i className='bx bx-power-off'></i>
           </button>

@@ -109,7 +109,7 @@ function RegisterPage() {
               <p className="exited-to-see">
                 We are surer exited to <span className="exited-to-see-span">see you!</span>
               </p>
-              <button type="submit" className="button">
+              <button type="submit" className="login-button">
                 Get Started!
               </button>
               {err && <span>Something went wrong!</span>}

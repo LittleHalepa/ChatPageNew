@@ -34,6 +34,7 @@ function LoginPage() {
         <section className="main-content">
           <div className="blur">
             <form className="logIn-form" onSubmit={handleSubmit}>
+              <Link to="/home" className="presentation-link">Presentation!</Link>
               <p className="login-text">
                 Login
                 <img className="cloud-image" src={cloudImage} />
@@ -75,7 +76,7 @@ function LoginPage() {
               <p className="register-text">
                 Don't have an account? <Link to="/registration">Register</Link>
               </p>
-              <button type="submit" className="button">
+              <button type="submit" className="login-button">
                 Submit
               </button>
               {err && <span>Something went wrong!</span>}

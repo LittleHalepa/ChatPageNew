@@ -233,7 +233,7 @@
 
 /* Footer */
 
-footer {
+.chat-page-footer {
     position: fixed;
 
     display: flex;
@@ -256,11 +256,11 @@ footer {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-footer input {
+.chat-page-footer input {
     flex: 1;
 }
 
-footer button {
+.chat-page-footer button {
     width: 100px;
     height: 43px;
 
@@ -284,19 +284,19 @@ footer button {
     transform 0.25s;
 }
 
-footer button:hover {
+.chat-page-footer button:hover {
     background-color: #FFF;
     color: rgb(0, 2, 46);
     transform: translateY(-2px);
 }
 
-footer button:active {
+.chat-page-footer button:active {
     background-color: rgb(255, 255, 255);
     color: rgb(0, 2, 46);
     transform: translateY(0);
 }
 
-footer input {
+.chat-page-footer input {
     height: 45px;
     width: 100%;
 
@@ -321,7 +321,7 @@ footer input {
     color 0.25s;
 }
 
-footer input:hover, footer input:focus {
+.chat-page-footer input:hover, footer input:focus {
     background-color: #FFF;
     color: rgb(0, 2, 46);
 }

@@ -4,6 +4,7 @@ import LoginPage from "./LogInPage";
 import RegisterPage from "./RegisterPage";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useContext } from "react";
+import Home from "./Home.jsx";
 
 function App() {
 
@@ -27,6 +28,7 @@ function App() {
           } />
           <Route path="login" element={<LoginPage></LoginPage>} />
           <Route path="registration" element={<RegisterPage></RegisterPage>} />
+          <Route path="home" element={<Home></Home>} />
         </Route>
       </Routes>
     </BrowserRouter>
