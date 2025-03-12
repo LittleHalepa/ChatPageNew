@@ -172,6 +172,14 @@
   width: 300px;
 }
 
+.h2-friend {
+  font-display: swap;
+    
+  font-family: 'Poppins';
+  font-style: normal;
+  font-weight: 700;
+}
+
 .chat-list-div ul {
   list-style-type: none;
   padding: 0;
