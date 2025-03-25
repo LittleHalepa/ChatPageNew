@@ -304,7 +304,7 @@
     transform: translateY(0);
 }
 
-.chat-page-footer input {
+.chat-page-footer .message-input {
     height: 45px;
     width: 100%;
 
@@ -398,4 +398,35 @@
 
   margin-left: 8px;
   margin-bottom: -4px;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-label {
+  font-size: 3rem;
+  transform: translate(2px, 6px);
+
+  cursor: pointer;
+
+  color: #fff;
+
+  transition: transform 0.2s;
+}
+
+.file-label:hover {
+  transform: translate(2px, 3px);
+}
+
+.user-image {
+
+
+  max-width: 300px;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.file-selected {
+  color: lightgreen;
 }

@@ -3,14 +3,16 @@ import { useState, useContext, useEffect, useRef } from "react";
 import { signOut } from "firebase/auth";
 import { auth } from "./firebase";
 import { collection, query, where, getDoc, updateDoc, getDocs, onSnapshot } from "firebase/firestore";
-import { db } from "./firebase";
+import { db, storage } from "./firebase";
 import { AuthContext } from "./context/AuthContext";
 import { doc, setDoc, deleteDoc } from "firebase/firestore";
-import { use } from "react";
+import { uploadBytesResumable } from "firebase/storage";
+import { v4 as uuidv4 } from 'uuid';
+import { ref, getDownloadURL } from "firebase/storage";
 
 function ChatPage() {
 
-  const [friendsList, setFriendsList] = useState([]);
+  const [img, setImg] = useState(null);
   const [currentChat, setCurrentChat] = useState("No one selected!");
   const [selectedFriendIndex, setSelectedFriendIndex] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -18,14 +20,14 @@ function ChatPage() {
   const [user, setUser] = useState(null);
   const [err, setErr] = useState(false);
   const [chats, setChats] = useState([]);
-  const [sender, setSender] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const { currentUser } = useContext(AuthContext);
 
-  const ref = useRef();
+  const ref1 = useRef();
 
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
+    ref1.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   
   useEffect(() => {
@@ -226,6 +228,46 @@ function ChatPage() {
     const newMessage = document.querySelector(".message-input").value;
     const newMessageSender = currentUser.displayName;
 
+    if (img) {
+      setIsLoading(true);
+      const storageRef = ref(storage, uuidv4());
+      const uploadTask = uploadBytesResumable(storageRef, img);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          // Observe state change events such as progress, pause, and resume
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          console.log('Upload is ' + progress + '% done');
+        },
+        (error) => {
+          console.error("Upload failed:", error);
+          setIsLoading(false);
+        },
+        async () => {
+          // Handle successful uploads on complete
+          try {
+            const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+            console.log("File available at", downloadURL);
+
+            setMessages(m => [...m, { message: newMessage, sender: newMessageSender, img: downloadURL }]);
+            const combinedId = currentUser.uid > user.uid ? currentUser.uid + user.uid : user.uid + currentUser.uid;
+            const chatRef = doc(db, "chats", combinedId);
+            await updateDoc(chatRef, {
+              messages: [...messages, { message: newMessage, sender: newMessageSender, img: downloadURL }],
+            });
+            document.querySelector(".message-input").value = "";
+            setImg(null);
+            document.querySelector(".file-label").classList.remove("file-selected");
+            setIsLoading(false);
+          } catch (error) {
+            console.error("Error getting download URL:", error);
+            setIsLoading(false);
+          }
+        }
+      );
+    }  
+
     if (newMessage) {
       setMessages(m => [...m, {message: newMessage, sender: newMessageSender}]);
       const combinedId = currentUser.uid > user.uid ? currentUser.uid + user.uid : user.uid + currentUser.uid;
@@ -243,6 +285,11 @@ function ChatPage() {
     }
   }
 
+  function selectFile(event) {
+    document.querySelector(".file-label").classList.add("file-selected");
+    setImg(event.target.files[0]);
+  }
+
   return (
     
     
@@ -252,13 +299,21 @@ function ChatPage() {
         {messages.map((message, index) => (
           <li key={index} className="message-item-li">
             <h3 className="author-of-message" style={{ color: message.sender === currentUser.displayName ? "rgba(0, 255, 13, 0.51)" : "rgb(85, 93, 255)"}} key={index}>{message.sender}</h3>
-            <div className="message-div-item" ref={ref} style={{backgroundColor: message.sender === currentUser.displayName ? "rgba(0, 255, 13, 0.51)" : "rgb(85, 93, 255)"}}>
+            <div className="message-div-item" ref={ref1} style={{backgroundColor: message.sender === currentUser.displayName ? "rgba(0, 255, 13, 0.51)" : "rgb(85, 93, 255)"}}>
               <p className="message-text-item">
                 {message.message}
               </p>
+              {message.img && <img src={message.img} className="user-image"></img>}
             </div>
           </li>
         ))}
+        {isLoading && (
+        <li className="message-item-li">
+          <div className="message-div-item" ref={ref1} style={{backgroundColor: "gray"}}>
+            <p className="message-text-item">Uploading image...</p>
+          </div>
+        </li>
+      )}
       </ul>
       
         <header className="header">
@@ -297,7 +352,11 @@ function ChatPage() {
           <button className="log-out-button" onClick={() => signOut(auth)}>
             <i className='bx bx-power-off'></i>
           </button>
-          <input type="text" placeholder="Type your message here!" className="message-input" onKeyDown={handleMessageKeyDownAdd}/>
+          <input type="text" placeholder="Type your message here!" className="message-input" onKeyDown={handleMessageKeyDownAdd} />
+          <input type="file" accept=".png,.jpg" className="file-input" placeholder="file" name="file" id="file" onChange={e => selectFile(e)}/>
+          <label htmlFor="file" className="file-label">
+            <i className='bx bx-image-add'></i>
+          </label>
           <button onClick={handleAddMessage}>Send</button>
         </footer>
       </div>
